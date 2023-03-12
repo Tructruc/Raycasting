@@ -41,61 +41,71 @@ void drawrect(GLfloat x1,GLfloat y1, GLfloat x2, GLfloat y2, Color color){
                  x2, y1, color.r, color.g, color.b, color.a);
 }
 
-float* search_intersect(float px, float py, float angle){
+void search_intersect(float px, float py, float angle, float* pos[2]){
     float x,y=0;
 
+
     if (angle>=0 && angle < PI_2){
+        px += 0.01;
+        py += 0.01;
         if (tan(PI_2-angle) * ((int)py + 1 - py) < ((int)px + 1 - px)) {
             x = tan(PI_2 - angle) * ((int) py + 1 - py) + px;
             y = (int)py+1;
-            std::cout << "x : " << x << ", y : " << y << std::endl;
+            //std::cout << "x : " << x << ", y : " << y << std::endl;
         }
         else {
             x = (int)px+1;
             y = tan(angle) * ((int) px + 1 - px) + py;
-            std::cout << "x : " << x << ", y : " << y << std::endl;
+            //std::cout << "x : " << x << ", y : " << y << std::endl;
         }
     }
     if (angle>=PI_2 && angle < PI1){
+        px -= 0.01;
+        py += 0.01;
         if (tan(PI_2 - angle) * ( (int)py- py + 1 ) > ((int)px-px)) {
             x = tan(PI_2 - angle) * ((int) py + 1 - py) + px;
             y = (int)py+1;
-            std::cout << "x : " << x << ", y : " << y << std::endl;
+            //std::cout << "x : " << x << ", y : " << y << std::endl;
         }
         else {
-            x = (int)px;
-            y = tan(angle) * ((int) px - px) + py;
-            std::cout << "x : " << x << ", y : " << y << std::endl;
+            x = (int)(px-0.01);
+            y = tan(angle) * ((int) (px-0.01) - px) + py;
+            //std::cout << "x : " << x << ", y : " << y << std::endl;
         }
     }
     if (angle>=PI1 && angle < PI1_2) {
+        px -= 0.01;
+        py -= 0.01;
         if (tan(PI_2 - angle) * ((int)py - py) > ( (int)px- px)) {
             x = tan(PI_2 - angle) * ((int)py - py) + px;
             y = (int)py;
-            std::cout << "x : " << x << ", y : " << y << std::endl;
+            //std::cout << "x : " << x << ", y : " << y << std::endl;
         }
         else {
             x = (int)px;
             y = tan(angle) * ((int) px - px) + py;
-            std::cout << "x : " << x << ", y : " << y << std::endl;
+            //std::cout << "x : " << x << ", y : " << y << std::endl;
         };
     }
     if (angle>=PI1_2 && angle < PI2) {
+        px += 0.01;
+        py -= 0.01;
         if (tan(PI_2 - angle) * ((int)py - py) < ( (int)px- px+1)){
             x = tan(PI_2 - angle) * ((int)py - py) + px;
             y = (int)py;
-            std::cout << "x : " << x << ", y : " << y << std::endl;
+            //std::cout << "x : " << x << ", y : " << y << std::endl;
         }
         else {
             x = (int)px+1;
             y = tan(angle) * ((int) px + 1 - px) + py;
-            std::cout << "x : " << x << ", y : " << y << std::endl;
+            //std::cout << "x : " << x << ", y : " << y << std::endl;
         }
     }
 
     drawrect(x*map_block_pixel_size-5,y* map_block_pixel_size-5, x*map_block_pixel_size+5, y*map_block_pixel_size+5, GREEN );
 
-    return NULL;
+    pos[0] = &x;
+    pos[1] = &y;
 }
 
 // Window spécific functions -------------------------------------------------------------------------------------------
@@ -160,7 +170,15 @@ void render() {
              3,
              RED);
 
-    search_intersect(player_x, player_y, player_angle);
+    float* pos[2];
+
+
+    search_intersect(player_x, player_y, player_angle, pos);
+    search_intersect(*pos[0], *pos[1], player_angle, pos);
+    search_intersect(*pos[0], *pos[1], player_angle, pos);
+
+    search_intersect(*pos[0], *pos[1], player_angle, pos);
+
 }
 
 
