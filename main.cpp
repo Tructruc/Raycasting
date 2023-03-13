@@ -108,7 +108,7 @@ void search_intersect(float px, float py, float angle, float* pos[2]){
     pos[1] = &y;
 }
 
-void dist_wall(float angle){
+float dist_wall(float angle){
     float* pos[2];
     int i =0;
     search_intersect(player_x, player_y, angle, pos);
@@ -150,7 +150,11 @@ void dist_wall(float angle){
 
     //std::cout << pos[0] << "; " << pos[1] << "; " << map[(int)*pos[0]+((int)*pos[1]*map_width)] << std::endl;
 
+    return sqrt(pow(*pos[0]-player_x,2) + pow(*pos[1]-player_y,2));
+
 }
+
+
 // Window spécific functions -------------------------------------------------------------------------------------------
 
 void on_key(S2D_Event e) {
@@ -231,12 +235,19 @@ void render() {
 
     float* pos[2];
     float angle = player_angle - 0.523598776;
+    float dist;
+    float line_height;
+    float start;
 
     for (int i = 0; i < 60; i+=1) {
         angle += 0.017453293;
         if (angle > PI2) angle -= PI2;
         if (angle < 0) angle += PI2;
-        dist_wall(angle);
+        dist = dist_wall(angle) * cos(angle);
+        line_height = 50000/dist;
+        start = WINDOW_HEIGHT / 2 - line_height / 2;
+        std::cout << line_height << std::endl;
+        drawline(map_width * map_block_pixel_size + i * 16, start, map_width * map_block_pixel_size + i * 16, start + line_height, 16, GREEN);
     }
 }
 
