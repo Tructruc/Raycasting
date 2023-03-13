@@ -110,13 +110,43 @@ void search_intersect(float px, float py, float angle, float* pos[2]){
 
 void dist_wall(float angle){
     float* pos[2];
-
+    int i =0;
     search_intersect(player_x, player_y, angle, pos);
-    while(map[(int)*pos[0]+((int)*pos[1]*map_width)]== 0){
-        search_intersect(*pos[0], *pos[1], angle, pos);
+
+    float x_offset;
+    float y_offset;
+
+    if (angle>=0 && angle < PI_2){
+        x_offset = 0.01;
+        y_offset = 0.01;
+    }
+    if (angle>=PI_2 && angle < PI1){
+        x_offset = -0.01;
+        y_offset = 0.01;
+    }
+    if (angle>=PI1 && angle < PI1_2) {
+        x_offset = -0.01;
+        y_offset = -0.01;
+    }
+    if (angle>=PI1_2 && angle < PI2) {
+        x_offset = 0.01;
+        y_offset = -0.01;
     }
 
-    drawrect(*pos[0]*map_block_pixel_size-5,*pos[1]* map_block_pixel_size-5, *pos[0]*map_block_pixel_size+5, *pos[1]*map_block_pixel_size+5, BLUE );
+
+    while(( (int)(*pos[0] + x_offset)+((int)(*pos[1]+y_offset)*map_width) < (sizeof(map) / sizeof(map[0])) ? map[(int)(*pos[0] + x_offset)+((int)(*pos[1]+y_offset)*map_width)] == 0 : false) && i <100 ){
+        search_intersect(*pos[0], *pos[1], angle, pos);
+        i++;
+    }
+
+    float new_angle = atan((player_y-*pos[1])/(player_x-*pos[0]));
+
+    if (new_angle-angle<=0.5 && new_angle-angle >=-0.5) drawrect(*pos[0]*map_block_pixel_size-5,*pos[1]* map_block_pixel_size-5, *pos[0]*map_block_pixel_size+5, *pos[1]*map_block_pixel_size+5, BLUE );
+    else {
+        drawrect(*pos[0] * map_block_pixel_size - 5, *pos[1] * map_block_pixel_size - 5,
+                 *pos[0] * map_block_pixel_size + 5, *pos[1] * map_block_pixel_size + 5, RED);
+        std::cout << new_angle - angle << std::endl;
+    }
 
     //std::cout << pos[0] << "; " << pos[1] << "; " << map[(int)*pos[0]+((int)*pos[1]*map_width)] << std::endl;
 
@@ -183,14 +213,28 @@ void render() {
              3,
              RED);
 
+
+    drawline(player_x*map_block_pixel_size,
+             player_y*map_block_pixel_size,
+             player_x*map_block_pixel_size+ cos(player_angle+0.523598776)*1000,
+             player_y*map_block_pixel_size+ sin(player_angle+0.523598776)*1000,
+             3,
+             CYAN);
+
+    drawline(player_x*map_block_pixel_size,
+             player_y*map_block_pixel_size,
+             player_x*map_block_pixel_size+ cos(player_angle-0.523598776)*1000,
+             player_y*map_block_pixel_size+ sin(player_angle-0.523598776)*1000,
+             3,
+             CYAN);
+
+
     float* pos[2];
 
 
     for (int i = 0; i < 60; i+=1) {
         dist_wall(player_angle-0.523598776+i*0.017453293);
     }
-
-
 }
 
 
@@ -208,6 +252,7 @@ int main() {
             "RayCasting", WINDOW_WIDTH, WINDOW_HEIGHT, update, render, 0
     );
     window->on_key = on_key;
+
     S2D_Show(window);
     return 0;
 }

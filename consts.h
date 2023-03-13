@@ -21,7 +21,7 @@ struct Color {
 // Constants -----------------------------------------------------------------------------------------------------------
 
 const int WINDOW_HEIGHT= 500;
-const int WINDOW_WIDTH=500;
+const int WINDOW_WIDTH=1500;
 
 const int map_width=10;
 const int map_height=10;
@@ -49,6 +49,8 @@ const Color BLUE = {0, 0, 1, 1};
 const Color BLACK = {0,0,0,1};
 const Color WHITE = {1, 1, 1, 1};
 const Color GREY = {0.5,0.5,0.5,1};
+const Color YELLOW = {1, 1, 0, 1};
+const Color CYAN = {0,1,1,1};
 
 const float PI_2 = M_PI/2;
 const float PI1 = M_PI;
