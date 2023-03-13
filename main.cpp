@@ -145,7 +145,7 @@ void dist_wall(float angle){
     else {
         drawrect(*pos[0] * map_block_pixel_size - 5, *pos[1] * map_block_pixel_size - 5,
                  *pos[0] * map_block_pixel_size + 5, *pos[1] * map_block_pixel_size + 5, RED);
-        std::cout << new_angle - angle << std::endl;
+        //std::cout << new_angle - angle << std::endl;
     }
 
     //std::cout << pos[0] << "; " << pos[1] << "; " << map[(int)*pos[0]+((int)*pos[1]*map_width)] << std::endl;
@@ -230,10 +230,13 @@ void render() {
 
 
     float* pos[2];
-
+    float angle = player_angle - 0.523598776;
 
     for (int i = 0; i < 60; i+=1) {
-        dist_wall(player_angle-0.523598776+i*0.017453293);
+        angle += 0.017453293;
+        if (angle > PI2) angle -= PI2;
+        if (angle < 0) angle += PI2;
+        dist_wall(angle);
     }
 }
 
