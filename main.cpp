@@ -244,7 +244,7 @@ void render() {
         if (angle > PI2) angle -= PI2;
         if (angle < 0) angle += PI2;
         dist = dist_wall(angle) * cos(angle);
-        line_height = 50000/dist;
+        line_height = 64*512/dist;
         start = WINDOW_HEIGHT / 2 - line_height / 2;
         std::cout << line_height << std::endl;
         drawline(map_width * map_block_pixel_size + i * 16, start, map_width * map_block_pixel_size + i * 16, start + line_height, 16, GREEN);
